@@ -1,0 +1,17 @@
+version: "3.8"
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql_asist
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: db_asist
+      MYSQL_USER: asist_db
+      MYSQL_PASSWORD: root
+    volumes:
+      - ../mysql:/var/lib/mysql
+    ports:
+      - "3312:3306"
+volumes:
+  db_data: {}
