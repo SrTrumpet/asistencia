@@ -1,4 +1,4 @@
 Back:
 
 - CRUD
-- BAses de datos
+- Bases de datos

@@ -1,0 +1,36 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+"""La entidad Subject que representa una asignatura"""
+type SubjectEntity {
+  id: ID!
+  name: String!
+  numberOfClasses: Float!
+}
+
+type Query {
+  dummyQuery: String!
+}
+
+type Mutation {
+  """Create a new subject by providing the name and number of classes."""
+  createSubject(
+    """
+    The input data for creating a new subject, including name and number of classes.
+    """
+    createSubjectInput: CreateSubjectDto!
+  ): SubjectEntity!
+
+  """Remove a subject by its name. Returns true if deletion is successful."""
+  removeSubject(
+    """The name of the subject to delete."""
+    name: String!
+  ): Boolean!
+  updateSubject(createSubjectInput: CreateSubjectDto!): Boolean!
+}
+
+input CreateSubjectDto {
+  name: String!
+  numberOfClasses: Int
+}

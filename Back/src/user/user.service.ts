@@ -9,4 +9,31 @@ export class UserService{
         @InjectRepository(UserEntity)
         private readonly userRepository : Repository<UserEntity>
     ){}
+
+
+    async addNewStudent (){
+
+    }
+
+    async addNewTeacher(){
+
+    }
+
+    async editStudent(){
+
+    }
+
+    async editTeacher(){
+
+    }
+
+    async deleteStudent() {
+
+    }
+
+    async deleteTeacher() {
+
+    }
+
+    
 }
