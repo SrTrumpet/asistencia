@@ -2,6 +2,7 @@ import {Entity, PrimaryGeneratedColumn, Column} from 'typeorm';
 import {ObjectType, Field, ID} from '@nestjs/graphql';
 
 @ObjectType()
+@Entity()
 export class AsistEntity {
 
     @PrimaryGeneratedColumn()
@@ -16,11 +17,11 @@ export class AsistEntity {
     @Field()
     idSubject: number;
 
-    @Column()
+    @Column({default: 0})
     @Field()
     asist: number;
 
-    @Column()
+    @Column({default: 0})
     @Field()
     absences: number;
 }
