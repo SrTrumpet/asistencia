@@ -40,4 +40,10 @@ export class SubjectService{
         await this.subjectRepository.save(subject);
         return subject;
     }
+
+    async findAll(): Promise<SubjectEntity[]> {
+        return await this.subjectRepository.find();
+    }
+
+    
 }

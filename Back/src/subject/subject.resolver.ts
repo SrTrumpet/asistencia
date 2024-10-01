@@ -2,6 +2,7 @@ import { Resolver, Args, Mutation, Query, Context} from '@nestjs/graphql';
 import { SubjectService } from './subject.service';
 import { SubjectEntity } from './entities/subject.entity';
 import { CreateSubjectDto } from './dto/createSubject.dto';
+import { UpdateSubjectDto } from './dto/updateSubject.dto';
 
 @Resolver()
 export class SubjectResolver{
@@ -19,12 +20,13 @@ export class SubjectResolver{
     }
 
     @Mutation(() => Boolean)
-    async updateSubject(@Args('createSubjectInput') createSubjectDto: CreateSubjectDto): Promise<SubjectEntity>{
-        return this.subjectService.updateSubject(createSubjectDto);
+    async updateSubject(@Args('createSubjectInput') updateSubject: UpdateSubjectDto): Promise<SubjectEntity>{
+        return this.subjectService.updateSubject(updateSubject);
     }
 
-    @Query(() => String)
-    dummyQuery(): string {
-        return 'Hello from the dummy query!';
+
+    @Query(() => [SubjectEntity])
+    listSubject(): Promise<SubjectEntity[]>{
+        return this.subjectService.findAll();
     }
 }
