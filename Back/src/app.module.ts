@@ -13,6 +13,7 @@ import { join } from 'path';
   imports:[
     AsistModule,
     SubjectModule,
+    UserModule,
     TypeOrmModule.forRoot({
       type: "mysql",
       host: "localhost",

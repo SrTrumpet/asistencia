@@ -2,6 +2,21 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type UserEntity {
+  id: ID!
+  firstName: String!
+  lastName: String!
+  rut: String!
+  email: String!
+  role: String!
+}
+
+type UserWithAttendanceDto {
+  user: UserEntity!
+  totalAsist: Float!
+  totalAbsences: Float!
+}
+
 """La entidad Subject que representa una asignatura"""
 type SubjectEntity {
   id: ID!
@@ -10,10 +25,27 @@ type SubjectEntity {
 }
 
 type Query {
-  dummyQuery: String!
+  """Obtiene los usuarios y su asistencia por asignatura"""
+  listUsersBySubject(idSubject: Float!): [UserWithAttendanceDto!]!
+
+  """Busca un usuario por RUT"""
+  findByRut(rut: String!): UserEntity!
+  listSubject: [SubjectEntity!]!
 }
 
 type Mutation {
+  """Marca la asistencia de los estudiantes"""
+  takeAsist(createAsistInput: CreateAsistDto!): Boolean!
+
+  """
+  Create a new student by providing the name, rut, lastname, email and role
+  """
+  createUser(createUserDto: CreateUserDto!): UserEntity!
+  removeUser(rut: String!): Boolean!
+
+  """Actualiza un usuario"""
+  updateUser(rut: String!, updateUserDto: UpdateUserDto!): UserEntity!
+
   """Create a new subject by providing the name and number of classes."""
   createSubject(
     """
@@ -27,10 +59,47 @@ type Mutation {
     """The name of the subject to delete."""
     name: String!
   ): Boolean!
-  updateSubject(createSubjectInput: CreateSubjectDto!): Boolean!
+  updateSubject(createSubjectInput: UpdateSubjectDto!): Boolean!
+}
+
+input CreateAsistDto {
+  asistencias: [CreateAsistItemDto!]!
+}
+
+input CreateAsistItemDto {
+  idUser: Float!
+  idSubject: Float!
+  asist: Float!
+}
+
+input CreateUserDto {
+  firstName: String!
+  lastName: String!
+  rut: String!
+  email: String!
+  role: UserRoles!
+}
+
+"""The roles a user can have in the system"""
+enum UserRoles {
+  Student
+  Teacher
+  Admin
+}
+
+input UpdateUserDto {
+  firstName: String
+  lastName: String
+  email: String
 }
 
 input CreateSubjectDto {
   name: String!
+  numberOfClasses: Int
+}
+
+input UpdateSubjectDto {
+  name: String!
+  newName: String
   numberOfClasses: Int
 }
