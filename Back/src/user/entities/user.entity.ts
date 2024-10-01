@@ -17,7 +17,7 @@ export class UserEntity{
     @Column()
     @Field()
     lastName: string;
-
+    
     @Column()
     @Field()
     rut: string;
