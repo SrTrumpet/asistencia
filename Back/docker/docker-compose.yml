@@ -13,5 +13,29 @@ services:
       - ../mysql:/var/lib/mysql
     ports:
       - "3312:3306"
-volumes:
-  db_data: {}
+    networks:
+      - asist_network
+
+  app:
+    build:
+      context: ..
+      dockerfile: ./docker/Dockerfile 
+    container_name: nestjs_app
+    restart: always
+    environment:
+      DATABASE_HOST: mysql
+      DATABASE_PORT: 3306
+      DATABASE_USER: asist_db
+      DATABASE_PASSWORD: root
+      DATABASE_NAME: db_asist
+      NODE_ENV: production
+    ports:
+      - "3001:3000"
+    depends_on:
+      - mysql
+    networks:
+      - asist_network
+
+networks:
+  asist_network:
+    driver: bridge
