@@ -41,7 +41,6 @@ export class AsistService{
     }
 
     async listUsersBySubject(idSubject: number): Promise<UserWithAttendanceDto[]> {
-        // Obtener todas las asistencias de un subject en específico
         const asistencias = await this.asistRepository.find({
             where: { idSubject },
         });
@@ -50,18 +49,14 @@ export class AsistService{
             throw new NotFoundException(`No se encontraron usuarios para el subject con id ${idSubject}`);
         }
     
-        // Obtener los ids de los usuarios desde las asistencias
         const userIds = asistencias.map(asistencia => asistencia.idUser);
         
-        // Para cada usuario, calcular asistencias e inasistencias
         const userWithAttendance: UserWithAttendanceDto[] = await Promise.all(
             userIds.map(async (idUser) => {
-            const user = await this.userService.findUserById(idUser); // Llama al servicio de usuarios
+            const user = await this.userService.findUserById(idUser); 
     
-            // Filtrar las asistencias de este usuario
             const userAsistencias = asistencias.filter(asistencia => asistencia.idUser === idUser);
             
-            // Contar total de asistencias y ausencias
             const totalAsist = userAsistencias.reduce((sum, asist) => sum + asist.asist, 0);
             const totalAbsences = userAsistencias.reduce((sum, asist) => sum + asist.absences, 0);
     
