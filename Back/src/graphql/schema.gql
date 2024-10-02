@@ -8,7 +8,14 @@ type UserEntity {
   lastName: String!
   rut: String!
   email: String!
-  role: String!
+  role: UserRoles!
+}
+
+"""The roles a user can have in the system"""
+enum UserRoles {
+  Student
+  Teacher
+  Admin
 }
 
 type UserWithAttendanceDto {
@@ -24,12 +31,18 @@ type SubjectEntity {
   numberOfClasses: Float!
 }
 
+type AuthResponse {
+  message: String!
+  token: String!
+}
+
 type Query {
   """Obtiene los usuarios y su asistencia por asignatura"""
   listUsersBySubject(idSubject: Float!): [UserWithAttendanceDto!]!
 
   """Busca un usuario por RUT"""
   findByRut(rut: String!): UserEntity!
+  getAllUser: [UserEntity!]!
   listSubject: [SubjectEntity!]!
 }
 
@@ -37,14 +50,13 @@ type Mutation {
   """Marca la asistencia de los estudiantes"""
   takeAsist(createAsistInput: CreateAsistDto!): Boolean!
 
-  """
-  Create a new student by providing the name, rut, lastname, email and role
-  """
+  """Create a new user (either student or teacher)"""
   createUser(createUserDto: CreateUserDto!): UserEntity!
   removeUser(rut: String!): Boolean!
 
   """Actualiza un usuario"""
   updateUser(rut: String!, updateUserDto: UpdateUserDto!): UserEntity!
+  login(rut: String!, password: String!): AuthResponse!
 
   """Create a new subject by providing the name and number of classes."""
   createSubject(
@@ -78,13 +90,7 @@ input CreateUserDto {
   rut: String!
   email: String!
   role: UserRoles!
-}
-
-"""The roles a user can have in the system"""
-enum UserRoles {
-  Student
-  Teacher
-  Admin
+  password: String!
 }
 
 input UpdateUserDto {
