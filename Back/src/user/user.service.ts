@@ -4,16 +4,46 @@ import { Repository, Between, LessThan} from "typeorm";
 import { UserEntity } from "./entities/user.entity";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
+import { AuthEntity } from "src/auth/entity/auth.entity";
+import { UserRoles } from "./enums/user-roles.enums";
+import * as bcrypt from 'bcryptjs';
 
 @Injectable()
 export class UserService{
     constructor(
         @InjectRepository(UserEntity)
-        private readonly userRepository : Repository<UserEntity>
+        private readonly userRepository : Repository<UserEntity>,
+
+        @InjectRepository(AuthEntity)
+        private readonly authRepository: Repository<AuthEntity>,
     ){}
 
-    async addNewUser(createUserDto: CreateUserDto){
-        return await this.userRepository.save(createUserDto);
+    async addNewUser(createUserDto: CreateUserDto): Promise<UserEntity> {
+        const { role, password, ...userData } = createUserDto;
+    
+        if (!role) {
+            throw new BadRequestException('El campo role es obligatorio');
+        }
+    
+        const newUser = this.userRepository.create({
+            ...userData,
+            role, 
+        });
+        const savedUser = await this.userRepository.save(newUser);
+    
+        if ((role === UserRoles.Teacher || role === UserRoles.Admin)) {
+            if (!password) {
+                throw new BadRequestException('Se requiere una contraseña para roles Teacher o Admin');
+            }
+            const hashedPassword = await bcrypt.hash(password, 10);
+            const authEntity = this.authRepository.create({
+                idUser: savedUser.id,
+                password: hashedPassword,
+            });
+            await this.authRepository.save(authEntity);
+        }
+    
+        return savedUser;
     }
 
     async deleteUser(rut: string): Promise<boolean> {
@@ -56,7 +86,7 @@ export class UserService{
     async findUserById(id: number): Promise<UserEntity> {
         const user = await this.userRepository.findOne({
             where: { id },
-          select: ['id', 'firstName', 'lastName', 'rut'], // Seleccionar solo los campos necesarios
+            select: ['id', 'firstName', 'lastName', 'rut', 'email', 'role'], 
         });
     
         if (!user) {
@@ -64,5 +94,15 @@ export class UserService{
         }
     
         return user;
+    }
+
+    async getAllUser(): Promise<UserEntity[]> {
+        return await this.userRepository.find();
+    }
+
+    async getAllStudents(): Promise<UserEntity[]> {
+        return await this.userRepository.find({
+            where: { role: UserRoles.Student },
+        });
     }
 }

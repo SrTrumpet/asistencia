@@ -9,8 +9,8 @@ export class UserResolver{
     
     constructor (private readonly userService : UserService){}
 
-    @Mutation(() => UserEntity, {description: 'Create a new student by providing the name, rut, lastname, email and role'})
-    async createUser(@Args('createUserDto') createUserDto: CreateUserDto): Promise<UserEntity>{
+    @Mutation(() => UserEntity, {description: 'Create a new user (either student or teacher)'})
+    async createUser(@Args('createUserDto') createUserDto: CreateUserDto): Promise<UserEntity> {
         return this.userService.addNewUser(createUserDto);
     }
 
@@ -31,4 +31,14 @@ export class UserResolver{
     async findByRut(@Args('rut') rut: string): Promise<UserEntity> {
         return this.userService.findByRut(rut);
     }
+
+    @Query(() => [UserEntity])
+    async getAllUser(){
+        return this.userService.getAllUser();
+    }
+
+    @Query(() => [UserEntity], { description: 'Obtiene todos los usuarios con rol de student' })
+    async getAllStudents(): Promise<UserEntity[]> {
+        return this.userService.getAllStudents();
+}
 }

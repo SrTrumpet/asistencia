@@ -4,8 +4,7 @@ import { UserRoles } from '../enums/user-roles.enums';
 
 @ObjectType()
 @Entity()
-export class UserEntity{
-
+export class UserEntity {
     @PrimaryGeneratedColumn()
     @Field(() => ID)
     id: number;
@@ -17,7 +16,7 @@ export class UserEntity{
     @Column()
     @Field()
     lastName: string;
-    
+
     @Column()
     @Field()
     rut: string;
@@ -26,7 +25,11 @@ export class UserEntity{
     @Field()
     email: string;
 
-    @Column()
-    @Field()
+    @Column({
+        type: "enum",
+        enum: UserRoles,
+        default: UserRoles.Student,
+    })
+    @Field(() => UserRoles)
     role: UserRoles;
 }
